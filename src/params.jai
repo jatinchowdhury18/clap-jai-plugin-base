@@ -38,7 +38,7 @@ Param_Save_Info :: struct {
     param_value: float64;
 }
 
-serialize_params :: (using param_holder: *Param_Holder) -> [] u8 #must {
+serialize_params :: (using param_holder: *Param_Holder) -> [] u8 {
     serial_buffer : [] u8;
     serial_buffer.count = size_of(Param_Save_Info) * params.count;
     serial_buffer.data = alloc(serial_buffer.count);
@@ -260,7 +260,7 @@ clap_params_get_value :: (plugin: *clap_plugin_t, param_id: clap_id, out_value: 
     push_context this_plugin.plugin_context {
         using self := this_plugin.clap_params_ext;
         param := params[param_id];
-        (<<out_value) = param.get_value(param);
+        out_value.* = param.get_value(param);
         return true;
     }
 }
@@ -286,7 +286,7 @@ clap_params_text_to_value :: (plugin: *clap_plugin_t, param_id: clap_id, param_v
         value_str.data = param_value_text;
         value_str.count = c_style_strlen(param_value_text);
 
-        (<<out_value) = param.text_to_value(param, value_str);
+        out_value.* = param.text_to_value(param, value_str);
 
         return true;
     }
